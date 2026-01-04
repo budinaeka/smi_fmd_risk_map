@@ -156,34 +156,7 @@
         </div>
 
         <div class="sidebar-content">
-            <!-- Pilihan Basemap -->
-            <div class="card mb-3">
-                <div class="card-header bg-primary text-white p-0" id="headingBasemap">
-                    <button class="btn btn-link text-white text-decoration-none w-100 text-start p-2 d-flex justify-content-between align-items-center shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBasemap" aria-expanded="true" aria-controls="collapseBasemap">
-                        <span><i class="bi bi-map me-2"></i> Basemap</span>
-                        <i class="bi bi-chevron-down"></i>
-                    </button>
-                </div>
-                <div id="collapseBasemap" class="collapse show" aria-labelledby="headingBasemap">
-                    <div class="card-body">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="basemap" id="base-osm" value="osm" checked>
-                        <label class="form-check-label" for="base-osm">OpenStreetMap (Standard)</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="basemap" id="base-carto" value="carto">
-                        <label class="form-check-label" for="base-carto">CartoDB Voyager (Clean)</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="basemap" id="base-satellite" value="satellite">
-                        <label class="form-check-label" for="base-satellite">Esri Satellite</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="basemap" id="base-topo" value="topo">
-                        <label class="form-check-label" for="base-topo">OpenTopoMap</label>
-                    </div>
-                </div>
-            </div>
+            <!-- Pilihan Basemap Removed (Moved to Map Control) -->
 
             <!-- Pilihan Layer -->
             <div class="card mb-3">
@@ -246,23 +219,27 @@
         return div;
     };
 
-    // 2. Reference Control
+    // 2. Reference Control (Updated: Larger & Complete)
     var referenceControl = L.control({position: 'bottomright'});
 
     referenceControl.onAdd = function (map) {
         var div = L.DomUtil.create('div', 'info reference');
-        div.style.backgroundColor = "rgba(255, 255, 255, 0.9)";
-        div.style.padding = "5px 8px";
+        div.style.backgroundColor = "rgba(255, 255, 255, 0.95)";
+        div.style.padding = "10px";
         div.style.borderRadius = "5px";
-        div.style.boxShadow = "0 0 5px rgba(0,0,0,0.2)";
+        div.style.boxShadow = "0 0 15px rgba(0,0,0,0.2)";
         div.style.marginBottom = "5px";
         div.style.marginRight = "5px";
-        div.style.maxWidth = "200px";
-        div.style.fontSize = "0.6rem";
-        div.style.lineHeight = "1.2";
+        div.style.maxWidth = "300px"; // Lebih lebar
+        div.style.fontSize = "0.75rem"; // Ukuran font normal
+        div.style.lineHeight = "1.4";
         
         div.innerHTML = `
-            <strong>Ref:</strong> Prasetia, B. E., et al. (2025). <em>Spatial risk assessment of FMD...</em> <a href="https://doi.org/10.1016/j.rvsc.2025.105694" target="_blank" style="text-decoration:none;">[Link]</a>
+            <strong>Referensi:</strong><br>
+            Prasetia, B. E., Primatika, R. A., & Nugroho, W. S. (2025). 
+            <em>Spatial risk assessment of foot and mouth disease in Sukabumi regency, Indonesia: A GIS and multicriteria decision analysis approach.</em> 
+            Research in Veterinary Science, 105694. 
+            <a href="https://doi.org/10.1016/j.rvsc.2025.105694" target="_blank" style="text-decoration:none; font-weight:bold;">[Buka Tautan]</a>
         `;
         return div;
     };
@@ -370,12 +347,9 @@
     // Tambahkan basemap default
     basemaps['osm'].addTo(map);
 
-    // Event Listener untuk Ganti Basemap
-    document.querySelectorAll('input[name="basemap"]').forEach(radio => {
-        radio.addEventListener('change', function() {
-            setBase(this.value);
-        });
-    });
+    // --- Control Layers (Basemap) ---
+    // Diposisikan di topleft (akan muncul di bawah zoom control secara default)
+    L.control.layers(basemaps, null, {position: 'topleft'}).addTo(map);
 
     // Object untuk menyimpan layer yang aktif
     var activeLayers = {};
@@ -483,9 +457,11 @@
 
                     // Zoom ke layer jika data ada
                     if (data.features && data.features.length > 0) {
+                        // Responsive Padding for FitBounds
+                        var padding = (window.innerWidth <= 768) ? [20, 20] : [50, 50];
+                        
                         map.fitBounds(layer.getBounds(), {
-                            paddingBottomRight: [350, 0], // Geser tengah peta ke kiri (menghindari sidebar di kanan)
-                            paddingTopLeft: [0, 0]
+                            padding: padding
                         });
                     }
                 }

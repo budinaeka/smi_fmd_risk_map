@@ -156,34 +156,7 @@
         </div>
 
         <div class="sidebar-content">
-            <!-- Pilihan Basemap -->
-            <div class="card mb-3">
-                <div class="card-header bg-primary text-white p-0" id="headingBasemap">
-                    <button class="btn btn-link text-white text-decoration-none w-100 text-start p-2 d-flex justify-content-between align-items-center shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBasemap" aria-expanded="true" aria-controls="collapseBasemap">
-                        <span><i class="bi bi-map me-2"></i> Basemap</span>
-                        <i class="bi bi-chevron-down"></i>
-                    </button>
-                </div>
-                <div id="collapseBasemap" class="collapse show" aria-labelledby="headingBasemap">
-                    <div class="card-body">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="basemap" id="base-osm" value="osm" checked>
-                        <label class="form-check-label" for="base-osm">OpenStreetMap (Standard)</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="basemap" id="base-carto" value="carto">
-                        <label class="form-check-label" for="base-carto">CartoDB Voyager (Clean)</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="basemap" id="base-satellite" value="satellite">
-                        <label class="form-check-label" for="base-satellite">Esri Satellite</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="basemap" id="base-topo" value="topo">
-                        <label class="form-check-label" for="base-topo">OpenTopoMap</label>
-                    </div>
-                </div>
-            </div>
+            <!-- Pilihan Basemap Removed (Moved to Map Control) -->
 
             <!-- Pilihan Layer -->
             <div class="card mb-3">
@@ -357,12 +330,9 @@
     // Tambahkan basemap default
     basemaps['osm'].addTo(map);
 
-    // Event Listener untuk Ganti Basemap
-    document.querySelectorAll('input[name="basemap"]').forEach(radio => {
-        radio.addEventListener('change', function() {
-            setBase(this.value);
-        });
-    });
+    // --- Control Layers (Basemap) ---
+    // Diposisikan di topleft (akan muncul di bawah zoom control secara default)
+    L.control.layers(basemaps, null, {position: 'topleft'}).addTo(map);
 
     // Object untuk menyimpan layer yang aktif
     var activeLayers = {};
@@ -469,9 +439,11 @@
                     
                     // Zoom ke layer jika data ada
                     if (data.features && data.features.length > 0) {
+                        // Responsive Padding for FitBounds
+                        var padding = (window.innerWidth <= 768) ? [20, 20] : [50, 50];
+                        
                         map.fitBounds(layer.getBounds(), {
-                            paddingBottomRight: [350, 0], // Geser tengah peta ke kiri (menghindari sidebar di kanan)
-                            paddingTopLeft: [0, 0]
+                            padding: padding
                         });
                     }
                 }
