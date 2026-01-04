@@ -161,10 +161,14 @@
         <div class="sidebar-content">
             <!-- Pilihan Basemap -->
             <div class="card mb-3">
-                <div class="card-header bg-primary text-white">
-                    <i class="bi bi-map"></i> Basemap
+                <div class="card-header bg-primary text-white p-0" id="headingBasemap">
+                    <button class="btn btn-link text-white text-decoration-none w-100 text-start p-2 d-flex justify-content-between align-items-center shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBasemap" aria-expanded="true" aria-controls="collapseBasemap">
+                        <span><i class="bi bi-map me-2"></i> Basemap</span>
+                        <i class="bi bi-chevron-down"></i>
+                    </button>
                 </div>
-                <div class="card-body">
+                <div id="collapseBasemap" class="collapse show" aria-labelledby="headingBasemap">
+                    <div class="card-body">
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="basemap" id="base-osm" value="osm" checked>
                         <label class="form-check-label" for="base-osm">OpenStreetMap (Standard)</label>
@@ -186,10 +190,14 @@
 
             <!-- Pilihan Layer -->
             <div class="card mb-3">
-                <div class="card-header bg-success text-white">
-                    <i class="bi bi-layers"></i> Layer Data
+                <div class="card-header bg-success text-white p-0" id="headingLayer">
+                    <button class="btn btn-link text-white text-decoration-none w-100 text-start p-2 d-flex justify-content-between align-items-center shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLayer" aria-expanded="true" aria-controls="collapseLayer">
+                        <span><i class="bi bi-layers"></i> Layer Data</span>
+                        <i class="bi bi-chevron-down"></i>
+                    </button>
                 </div>
-                <div class="card-body">
+                <div id="collapseLayer" class="collapse show" aria-labelledby="headingLayer">
+                    <div class="card-body">
                     <div class="form-check layer-item">
                         <input class="form-check-input layer-toggle" type="checkbox" value="risk_zones" id="layer-risk" checked>
                         <label class="form-check-label" for="layer-risk">
@@ -203,6 +211,7 @@
                             <div><span class="legend-color" style="background: #1b5e20;"></span> Sangat Rendah</div>
                         </div>
                     </div>
+                </div>
                 </div>
             </div>
             
@@ -454,6 +463,24 @@
         // Muat layer jika checkbox dicentang secara default (saat load)
         if (checkbox.checked) {
             loadLayer(checkbox.value);
+        }
+    });
+
+    // Auto-collapse sections on mobile
+    document.addEventListener("DOMContentLoaded", function() {
+        if (window.innerWidth <= 768) {
+            var collapseElements = document.querySelectorAll('.collapse.show');
+            collapseElements.forEach(function(el) {
+                // Remove 'show' class directly to hide without animation issues on load
+                el.classList.remove('show');
+                // Update button state
+                var id = el.getAttribute('id');
+                var btn = document.querySelector(`button[data-bs-target="#${id}"]`);
+                if(btn) {
+                    btn.classList.add('collapsed');
+                    btn.setAttribute('aria-expanded', 'false');
+                }
+            });
         }
     });
 
