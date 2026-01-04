@@ -145,9 +145,6 @@
     <!-- Sidebar Sebelah Kanan -->
     <div id="sidebar">
         <div class="sidebar-header position-relative">
-            <!-- Tombol Close (Mobile Only) -->
-            <button type="button" class="btn-close d-md-none position-absolute top-0 end-0 m-3" aria-label="Close" id="sidebar-close"></button>
-            
             <div class="logos">
                 <!-- Logo Pemda Sukabumi -->
                 <img src="assets/img/Lambang_Kab_Sukabumi.png" onerror="this.src='https://via.placeholder.com/60?text=PEMDA'" alt="Logo Sukabumi" class="logo-img">
@@ -203,13 +200,6 @@
                         <label class="form-check-label" for="layer-risk">
                             Zona Risiko PMK
                         </label>
-                        <div class="small text-muted mt-1">
-                            <div><span class="legend-color" style="background: #d32f2f;"></span> Sangat Tinggi</div>
-                            <div><span class="legend-color" style="background: #f57c00;"></span> Tinggi</div>
-                            <div><span class="legend-color" style="background: #fbc02d;"></span> Sedang</div>
-                            <div><span class="legend-color" style="background: #388e3c;"></span> Rendah</div>
-                            <div><span class="legend-color" style="background: #1b5e20;"></span> Sangat Rendah</div>
-                        </div>
                     </div>
                 </div>
                 </div>
@@ -235,17 +225,64 @@
     // Inisialisasi Peta (Koordinat Sukabumi)
     var map = L.map('map').setView([-6.9216, 106.9249], 10);
 
+    // --- Custom Controls (Legenda & Referensi) ---
+    
+    // 1. Legend Control (Zona Risiko)
+    var legendControl = L.control({position: 'bottomleft'});
+
+    legendControl.onAdd = function (map) {
+        var div = L.DomUtil.create('div', 'info legend');
+        div.style.backgroundColor = "white";
+        div.style.padding = "10px";
+        div.style.borderRadius = "5px";
+        div.style.boxShadow = "0 0 15px rgba(0,0,0,0.2)";
+        div.style.marginBottom = "20px"; 
+        div.style.marginLeft = "10px";
+        
+        div.innerHTML = `
+            <h6 class="mb-2" style="font-size: 0.8rem; font-weight: bold; margin-top:0;">Zona Risiko PMK</h6>
+            <div style="font-size: 0.75rem; line-height: 1.5;">
+                <div><span style="background: #d32f2f; width: 15px; height: 15px; display: inline-block; margin-right: 5px; vertical-align: middle; border:1px solid #ccc;"></span> Sangat Tinggi</div>
+                <div><span style="background: #f57c00; width: 15px; height: 15px; display: inline-block; margin-right: 5px; vertical-align: middle; border:1px solid #ccc;"></span> Tinggi</div>
+                <div><span style="background: #fbc02d; width: 15px; height: 15px; display: inline-block; margin-right: 5px; vertical-align: middle; border:1px solid #ccc;"></span> Sedang</div>
+                <div><span style="background: #388e3c; width: 15px; height: 15px; display: inline-block; margin-right: 5px; vertical-align: middle; border:1px solid #ccc;"></span> Rendah</div>
+                <div><span style="background: #1b5e20; width: 15px; height: 15px; display: inline-block; margin-right: 5px; vertical-align: middle; border:1px solid #ccc;"></span> Sangat Rendah</div>
+            </div>
+        `;
+        return div;
+    };
+
+    // 2. Reference Control
+    var referenceControl = L.control({position: 'bottomright'});
+
+    referenceControl.onAdd = function (map) {
+        var div = L.DomUtil.create('div', 'info reference');
+        div.style.backgroundColor = "rgba(255, 255, 255, 0.9)";
+        div.style.padding = "5px 8px";
+        div.style.borderRadius = "5px";
+        div.style.boxShadow = "0 0 5px rgba(0,0,0,0.2)";
+        div.style.marginBottom = "5px";
+        div.style.marginRight = "5px";
+        div.style.maxWidth = "200px";
+        div.style.fontSize = "0.6rem";
+        div.style.lineHeight = "1.2";
+        
+        div.innerHTML = `
+            <strong>Ref:</strong> Prasetia, B. E., et al. (2025). <em>Spatial risk assessment of FMD...</em> <a href="https://doi.org/10.1016/j.rvsc.2025.105694" target="_blank" style="text-decoration:none;">[Link]</a>
+        `;
+        return div;
+    };
+    referenceControl.addTo(map);
+
     // Mobile Sidebar Logic
     const sidebar = document.getElementById('sidebar');
     const toggleBtn = document.getElementById('sidebar-toggle');
-    const closeBtn = document.getElementById('sidebar-close');
 
     function toggleSidebar() {
         sidebar.classList.toggle('show');
     }
 
     if(toggleBtn) toggleBtn.addEventListener('click', toggleSidebar);
-    if(closeBtn) closeBtn.addEventListener('click', toggleSidebar);
 
     // Tutup sidebar saat klik peta (khusus mobile)
     map.on('click', function() {
@@ -447,6 +484,11 @@
         if (activeLayers[layerName]) {
             map.removeLayer(activeLayers[layerName]);
             delete activeLayers[layerName];
+
+            // Hapus Legenda jika layer risk_zones
+            if (layerName === 'risk_zones') {
+                legendControl.remove();
+            }
         }
     }
 
