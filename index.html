@@ -216,6 +216,26 @@
     // Inisialisasi Peta (Koordinat Sukabumi)
     var map = L.map('map').setView([-6.9216, 106.9249], 10);
 
+    // Mobile Sidebar Logic
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('sidebar-toggle');
+    const closeBtn = document.getElementById('sidebar-close');
+
+    function toggleSidebar() {
+        sidebar.classList.toggle('show');
+    }
+
+    if(toggleBtn) toggleBtn.addEventListener('click', toggleSidebar);
+    if(closeBtn) closeBtn.addEventListener('click', toggleSidebar);
+
+    // Tutup sidebar saat klik peta (khusus mobile)
+    map.on('click', function() {
+        if (window.innerWidth <= 768 && sidebar.classList.contains('show')) {
+            sidebar.classList.remove('show');
+        }
+    });
+
+
     // Definisi Basemap
     var basemaps = {
         'osm': L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
