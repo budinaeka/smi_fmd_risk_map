@@ -119,6 +119,16 @@
             margin-right: 5px;
             border: 1px solid #ccc;
         }
+        
+        /* Collapse Icon Rotation */
+        .card-header button[aria-expanded="true"] .bi-chevron-down {
+            transform: rotate(180deg);
+        }
+        .bi-chevron-down {
+            transition: transform 0.3s ease;
+        }
+
+        /* Mobile Responsive Styles */
     </style>
 </head>
 <body>

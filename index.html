@@ -119,6 +119,16 @@
             margin-right: 5px;
             border: 1px solid #ccc;
         }
+        
+        /* Collapse Icon Rotation */
+        .card-header button[aria-expanded="true"] .bi-chevron-down {
+            transform: rotate(180deg);
+        }
+        .bi-chevron-down {
+            transition: transform 0.3s ease;
+        }
+
+        /* Mobile Responsive Styles */
     </style>
 </head>
 <body>
@@ -234,6 +244,15 @@
             sidebar.classList.remove('show');
         }
     });
+
+    // Auto-collapse sections on mobile
+    if (window.innerWidth <= 768) {
+        var collapseElements = document.querySelectorAll('.collapse.show');
+        collapseElements.forEach(function(el) {
+            new bootstrap.Collapse(el, { toggle: true }); // Toggle to hide
+        });
+    }
+
 
 
     // Definisi Basemap
