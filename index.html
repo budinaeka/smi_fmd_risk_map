@@ -129,6 +129,20 @@
         }
 
         /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            .info.legend, .info.reference {
+                margin-bottom: 50px !important; /* Geser ke atas */
+                max-width: 250px !important;
+                font-size: 0.7rem !important;
+            }
+            .info.reference {
+                margin-right: 10px !important;
+            }
+            .info.legend {
+                margin-right: 10px !important; /* Karena pindah ke kanan */
+                margin-left: auto !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -195,7 +209,9 @@
     // --- Custom Controls (Legenda & Referensi) ---
     
     // 1. Legend Control (Zona Risiko)
-    var legendControl = L.control({position: 'bottomleft'});
+    // Mobile: Pindah ke bottomright agar stack dengan referensi (tidak overlap)
+    var legendPos = (window.innerWidth <= 768) ? 'bottomright' : 'bottomleft';
+    var legendControl = L.control({position: legendPos});
 
     legendControl.onAdd = function (map) {
         var div = L.DomUtil.create('div', 'info legend');
@@ -204,7 +220,10 @@
         div.style.borderRadius = "5px";
         div.style.boxShadow = "0 0 15px rgba(0,0,0,0.2)";
         div.style.marginBottom = "20px"; 
-        div.style.marginLeft = "10px";
+        // Margin Left/Right diatur via CSS Media Query untuk mobile
+        if (window.innerWidth > 768) {
+            div.style.marginLeft = "10px";
+        }
         
         div.innerHTML = `
             <h6 class="mb-2" style="font-size: 0.8rem; font-weight: bold; margin-top:0;">Zona Risiko PMK</h6>
